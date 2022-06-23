@@ -16,7 +16,10 @@ class Server {
             technologies:"/api/technologies",
             imageProyect:"/api/img/proyect",
             videoProyect:"/api/video/proyect",
-            email:'/api/email'
+            email:'/api/email',
+            grados:'/api/grados',
+            capitulos:'/api/capitulos',
+            voluntarios:'/api/voluntarios'
 
 
         }
@@ -72,6 +75,13 @@ class Server {
 
         
         this.app.use(this.paths.email,require('../routes/correo'))
+
+        this.app.use(this.paths.grados,require('../routes/grado'))
+
+        this.app.use(this.paths.capitulos,require('../routes/capitulo'))
+
+        this.app.use(this.paths.voluntarios,require('../routes/voluntario'))
+        
 
 
         
