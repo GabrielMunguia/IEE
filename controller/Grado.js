@@ -35,7 +35,9 @@ const obtenerGrados=async (req, res)=> {
         const grados=await Grado.find();
         res.json({
             status:true,
-            payload:grados
+            payload:{
+                grados:grados
+            }
         });
     } catch (error) {
         res.status(500).json({
