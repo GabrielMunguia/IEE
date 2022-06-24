@@ -25,6 +25,8 @@ const voluntarioSchema = new Schema({
     },
     telefono: {
         type: String,
+        unique: true,
+
        
        
     }
@@ -49,7 +51,7 @@ const voluntarioSchema = new Schema({
     },
     linkedin: {
         type: String,
-        unique: true
+       
     },
     img: {
         type: String,

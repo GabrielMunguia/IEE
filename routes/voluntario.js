@@ -5,6 +5,10 @@ const { crearVoluntario, getVoluntarios, actualizarVoluntario, eliminarVoluntari
 const { validarCampos } = require("../middlewares");
 const { capituloValido } = require("../middlewares/capituloValido");
 const { gradoValido } = require("../middlewares/gradoValido");
+const { validarCorreo } = require("../middlewares/validarCorreo");
+const { validarNoMiembro } = require("../middlewares/validarNoMiembro");
+const { validarTelefono } = require("../middlewares/validarTelefono");
+console.clear()
 
 router.post('/',[
     check("nombres", "El nombre es obligatorio").not().isEmpty(),
@@ -15,9 +19,15 @@ router.post('/',[
     check("capitulo", "El capitulo es obligatorio").not().isEmpty(),
     check("capitulo", "El capitulo no es un id valido").isMongoId(),
     check("noMiembro", "El numero de miembro es obligatorio").not().isEmpty(),
+    check('correo', 'El correo es obligatorio!!!').not().isEmpty(),
+    check('correo', 'El correo es invalido').isEmail(),
     validarCampos,
     capituloValido,
+    validarCorreo,
     gradoValido,
+    validarTelefono,
+    validarNoMiembro,
+  
   
 
 ],crearVoluntario)
