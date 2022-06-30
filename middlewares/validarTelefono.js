@@ -3,7 +3,7 @@ const Voluntario = require("../models/Voluntario");
 const validarTelefono =async  (req, res, next) => {
     const { telefono } = req.body;
     if (!telefono) {
-       next();
+       return next();
     }
     if (telefono.length > 0) {
        ///ver si es unico en la base de datos

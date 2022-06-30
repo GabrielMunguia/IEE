@@ -1,3 +1,4 @@
+const Grado = require("../models/Grado");
 const Voluntario = require("../models/Voluntario");
 const cloudinary = require("cloudinary").v2;
 const crearVoluntario = async (req, res = response) => {
@@ -51,12 +52,22 @@ const crearVoluntario = async (req, res = response) => {
   const actualizarVoluntario = async (req, res = response) => {
     try {
       const { id } = req.params;
-      const {...data }=req.body;
+      const {...data }=req.body; 
+      let seActualizoImg = false;
+      if(Object.keys(data).length === 0){
+        return res.status(400).json({
+          status:false,
+          msj:"No se recibieron datos"
+        })
+      }
+    
       const voluntario = await Voluntario.findByIdAndUpdate(id, data, {
         new: true,
       });
       if (req.files) {
+       try {
         const img = req.files.archivo;
+
         if (img) {
           if (voluntario.img) {
             //Elimino la imagen antigua del servidor
@@ -69,9 +80,15 @@ const crearVoluntario = async (req, res = response) => {
           const { tempFilePath } = req.files.archivo;
           const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
           voluntario.img = secure_url;
+          seActualizoImg = true;
         }
+       } catch (error) {
+        
+       }
       }
+      if(seActualizoImg){
       await voluntario.save();
+      }
       res.json({
         status: true,
         payload: {
@@ -136,7 +153,39 @@ const crearVoluntario = async (req, res = response) => {
 
 const getVoluntarios = async (req, res = response) => {
     try {
+      const {grado}=req.query;
+     
+      
+      if(grado){
+        console.log(grado)
+        //buscar por grado
+        const gradoV= await Grado.findOne({
+          grado:grado
+        });
+
+        if(!gradoV){
+          return res.status(400).json({
+            status:false,
+            msj:"No existe el grado"
+          })
+        }
+
+        const voluntarios = await Voluntario.find({
+       
+            grado:gradoV
+         
+        }).populate("grado").populate("capitulo");
+      return   res.json({
+          status: true,
+          payload: {
+            voluntarios: voluntarios,
+          },
+        });
+
+      }
       const voluntarios = await Voluntario.find().populate("grado").populate("capitulo");
+     
+     
       res.json({
         status: true,
         payload: {
