@@ -200,6 +200,32 @@ const getVoluntarios = async (req, res = response) => {
       });
     }
   }
+//obtener voluntario por id
+const getVoluntarioById = async (req, res = response) => {
+    try {
+      const { id } = req.params;
+      const voluntario = await Voluntario.findById(id).populate("grado").populate("capitulo");
+      if(!voluntario){
+        return res.status(400).json({
+          status:false,
+          msj:"No existe ningun registro con ese id "
+        })
+      }
+
+      res.json({
+        status: true,
+        payload: {
+          voluntario: voluntario,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        status: false,
+        msj: "Ocurrio un error comuniquese con el administrador",
+      });
+    }
+  }
 
 
   module.exports = {
@@ -208,4 +234,5 @@ const getVoluntarios = async (req, res = response) => {
     actualizarVoluntario,
     eliminarVoluntario,
     getVoluntario,
+    getVoluntarioById
 }
