@@ -31,6 +31,8 @@ router.post('/',[
 router.get('/',getVoluntarios)
 router.get('/:id',getVoluntarioById)
 router.put('/:id',[
+    validarCorreo,
+    validarTelefono,
 
 ],actualizarVoluntario)
 router.delete('/:id',eliminarVoluntario);
