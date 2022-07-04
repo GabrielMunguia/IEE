@@ -66,11 +66,13 @@ const crearVoluntario = async (req, res = response) => {
         const existeTelefono = await Voluntario.findOne({
           telefono:data.telefono
         })
-        if(existeTelefono&& existeTelefono._id!==id){
+        if(existeTelefono){
+          if(existeTelefono._id!==id){
           return res.status(400).json({
             status:false,
             msj:"El telefono ya existe"
           })
+        }
         }
       }
 
@@ -79,11 +81,16 @@ const crearVoluntario = async (req, res = response) => {
         const existeCorreo = await Voluntario.findOne({
           correo:data.correo
         })
-        if(existeCorreo&& existeCorreo._id!==id){
+        if(existeCorreo){
+
+       
+          if(existeCorreo._id!==id){
+
           return res.status(400).json({
             status:false,
             msj:"El correo ya existe"
           })
+        }
         }
       }
 
