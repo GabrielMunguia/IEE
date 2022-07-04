@@ -2,6 +2,7 @@ const Voluntario = require("../models/Voluntario");
 
 const validarTelefono =async  (req, res, next) => {
     const { telefono } = req.body;
+    const {id=""} = req.params;
     if (!telefono) {
        return next();
     }
@@ -10,7 +11,7 @@ const validarTelefono =async  (req, res, next) => {
        const existeTelefono = await Voluntario.findOne({ telefono });
       
          
-         if (existeTelefono) {
+         if (existeTelefono && id !== existeTelefono._id) {
             return res.status(400).json({
                 mensaje: "El telefono ya existe",
             });
