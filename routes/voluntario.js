@@ -30,11 +30,7 @@ router.post('/',[
 ],crearVoluntario)
 router.get('/',getVoluntarios)
 router.get('/:id',getVoluntarioById)
-router.put('/:id',[
-    validarCorreo,
-    validarTelefono,
-
-],actualizarVoluntario)
+router.put('/:id',actualizarVoluntario)
 router.delete('/:id',eliminarVoluntario);
 
 

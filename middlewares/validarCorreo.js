@@ -3,7 +3,6 @@
 const Voluntario = require("../models/Voluntario");
 const validarCorreo = async (req, res, next) => {
     const { correo } = req.body;
-    const {id=""} = req.params;
     if (!correo) {
         return res.status(400).json({
         estado: false,
@@ -12,7 +11,7 @@ const validarCorreo = async (req, res, next) => {
     }
     if (correo.length > 0) {
         const existeCorreo = await Voluntario.findOne({ correo });
-        if (existeCorreo && id !== existeCorreo._id) {
+        if (existeCorreo) {
         return res.status(400).json({
             estado: false,
             mensaje: "El correo ya existe",

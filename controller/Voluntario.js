@@ -60,6 +60,33 @@ const crearVoluntario = async (req, res = response) => {
           msj:"No se recibieron datos"
         })
       }
+
+      if(data.telefono){
+     
+        const existeTelefono = await Voluntario.findOne({
+          telefono:data.telefono
+        })
+        if(existeTelefono&& existeTelefono._id!==id){
+          return res.status(400).json({
+            status:false,
+            msj:"El telefono ya existe"
+          })
+        }
+      }
+
+   
+      if(data.correo){
+        const existeCorreo = await Voluntario.findOne({
+          correo:data.correo
+        })
+        if(existeCorreo&& existeCorreo._id!==id){
+          return res.status(400).json({
+            status:false,
+            msj:"El correo ya existe"
+          })
+        }
+      }
+
     
       const voluntario = await Voluntario.findByIdAndUpdate(id, data, {
         new: true,
