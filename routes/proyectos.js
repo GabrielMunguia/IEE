@@ -21,7 +21,7 @@ router.post(
     check("titulo").custom(existeProyecto),
     check("subTitulo", "El sub titulo es obligatorio").not().isEmpty(),
     check("descripcion", "La descripcion es obligatoria").not().isEmpty(),
-    check("tecnologias", "Las tecnologias son obligatorias").not().isEmpty(),
+    check("fecha", "La fecha es obligatroria").not().isEmpty(),
     validarCampos,
   ],
   crearProyecto

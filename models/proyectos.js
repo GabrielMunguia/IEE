@@ -20,9 +20,9 @@ const proyectosSchema= Schema({
         type:String,
         default:""
     },
-    tecnologias:{
-        type:String, 
-        require:[true,'Las tecnologias son  obligatorio']
+    fecha:{
+        type:Date, 
+        
     },
     
 })

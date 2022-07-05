@@ -99,7 +99,7 @@ const usuario= await  Usuario.findOne({correo})
 
 if(!usuario){
 return  res.status(400).json({
-     msj:'Correo/Password no son correcto - Correo'
+     msj:'Usuario/Contraseña no son correcto - Correo'
  })
 }
 
@@ -107,7 +107,7 @@ return  res.status(400).json({
 
  if(!usuario.estado){
     return  res.status(400).json({
-         msj:'Correo/Password no son correcto - NO esta activo'
+         msj:'EL USUARIO NO ESTA ACTIVO'
      })
  }
  

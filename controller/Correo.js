@@ -24,8 +24,8 @@ try {
    // send mail with defined transport object
    let info = await transporter.sendMail({
        from: `"CONTACTO DESDE PORTAFOLIO " <juayua2011@gmail.com>`, // sender address
-       to:"juayua2011@gmail.com,gabrielmunguia.dev@gmail.com", // list of receivers
-       subject: "☢☢☢☢--PORTAFOLIO EMAIL---☢☢☢☢", // Subject line
+       to:"juayua2011@gmail.com,rodrigo.alejandro.65@gmail.com", // list of receivers
+       subject: "🌐🌐🌐-CONTACTO DESDE  PAGINA IEEE --🌐🌐🌐", // Subject line
        text: mensajeCompleto, // plain text body
   
      });
