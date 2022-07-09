@@ -11,7 +11,7 @@ class Server {
             proyects:"/api/proyects",
             about:"/api/about",
             personalInformation:"/api/personalInformation",
-            users:"/api/users/",
+            users:"/api/usuarios/",
             sections:"/api/sections",
             technologies:"/api/technologies",
             imageProyect:"/api/img/proyect",

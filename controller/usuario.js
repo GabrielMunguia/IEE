@@ -2,6 +2,7 @@ const bcryptjs = require("bcryptjs");
 const { generarJWT } = require("../helpers/generar-JWT");
 const Usuario = require("../models/usuario");
 const bcrypt =  require("bcryptjs");
+const Voluntario = require("../models/Voluntario");
 const cloudinary = require('cloudinary').v2;
 const actualizarUsuario = async (req, res) => {
 
@@ -92,28 +93,31 @@ if(req.files){
 
 
 const login =  async  (req,res=response)=>{
-const {correo,password}=req.body;
+const {usuario,password}=req.body;
     try{
 //Verificar si el usuario existe
-const usuario= await  Usuario.findOne({correo})
+const usuarioDB= await  Usuario.findOne({usuario})
 
-if(!usuario){
+if(!usuarioDB){
 return  res.status(400).json({
      msj:'Usuario/Contraseña no son correcto - Correo'
  })
+ 
 }
+console.log(usuarioDB)
 
 //  Verificar si usuario esta activo
 
- if(!usuario.estado){
+ if(usuarioDB.estado !== true){
     return  res.status(400).json({
          msj:'EL USUARIO NO ESTA ACTIVO'
      })
  }
  
  //Verificar password
+ console.log('password',password)
 
- if(!bcryptjs.compareSync(password,usuario.password)){
+ if(!bcryptjs.compareSync(password,usuarioDB.password)){
      return  res.status(400).json({
           msj:'Correo/Password no son correcto - Password Invalido'
       })
@@ -121,8 +125,7 @@ return  res.status(400).json({
 
 
 
- //Generar JWT
- const token = await generarJWT(usuario.id)
+ const token = await generarJWT(usuarioDB._id)
  console.log(token)
 
 
@@ -142,8 +145,83 @@ return  res.status(400).json({
 
 }
 
+//crear usuario
+const crearUsuario = async (req, res) => {
+  try {
+    console.clear();
+    const { usuario, password, nombre,voluntario } = req.body;
+    //validar si exite un voluntario con ese id
+    const voluntarioExiste = await Voluntario.findById({_id:voluntario});
+    if (!voluntarioExiste) {
+      return res.status(400).json({
+        msj: "El voluntario no existe",
+      });
+    }
+    //Verificar si el usuario existe
+    const existeUsuario = await Usuario.findOne({ usuario });
+    if (existeUsuario) {
+      return res.status(400).json({
+        status: false,
+        msj: "El usuario ya existe"
+      });
+    }
+    //Encriptar la contra
+    const salt = bcryptjs.genSaltSync();
+    const passwordEncriptado = bcryptjs.hashSync(password, salt);
+    //Crear el usuario
+
+
+
+    const usuarioDB = new Usuario({
+      usuario,
+      password: passwordEncriptado,
+      nombre,
+      estado:true,
+
+    });
+
+    if (req.files) {
+      try {
+       const img = req.files.archivo;
+
+       if (img) {
+         if (voluntario.img) {
+           //Elimino la imagen antigua del servidor
+           const nombreArray = voluntario.img.split("/");
+           const nombre = nombreArray[nombreArray.length - 1];
+           const [public_id] = nombre.split(".");
+           cloudinary.uploader.destroy(public_id);
+         }
+         //subo la imagen
+         const { tempFilePath } = req.files.archivo;
+         const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+         usuario.img = secure_url;
+        
+       }
+      } catch (error) {
+       
+      }
+     }
+    await usuarioDB.save();
+    res.json({
+      status: true,
+      payload: {
+        usuario: usuarioDB
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    console.log(error.message);
+    res.status(500).json({
+      msj: "Comuniquese con el administrador"
+    });
+  }
+}
+
 
 
 module.exports = {
-  actualizarUsuario,login
+  actualizarUsuario,
+  login,
+  crearUsuario
 };
