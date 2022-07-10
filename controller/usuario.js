@@ -96,7 +96,7 @@ const login =  async  (req,res=response)=>{
 const {usuario,password}=req.body;
     try{
 //Verificar si el usuario existe
-const usuarioDB= await  Usuario.findOne({usuario})
+const usuarioDB= await  Usuario.findOne({usuario}).populate('voluntario');
 
 if(!usuarioDB){
 return  res.status(400).json({
@@ -122,7 +122,7 @@ console.log(usuarioDB)
           msj:'Correo/Password no son correcto - Password Invalido'
       })
   }
-
+// get Voluntario
 
 
  const token = await generarJWT(usuarioDB._id)
@@ -130,7 +130,9 @@ console.log(usuarioDB)
 
 
  res.json({
-     usuario,
+     usuario:usuarioDB,
+
+    
      token
      
  })
@@ -151,8 +153,8 @@ const crearUsuario = async (req, res) => {
     console.clear();
     const { usuario, password, nombre,voluntario } = req.body;
     //validar si exite un voluntario con ese id
-    const voluntarioExiste = await Voluntario.findById({_id:voluntario});
-    if (!voluntarioExiste) {
+    const voluntarioDB = await Voluntario.findById({_id:voluntario});
+    if (!voluntarioDB) {
       return res.status(400).json({
         msj: "El voluntario no existe",
       });
@@ -177,6 +179,7 @@ const crearUsuario = async (req, res) => {
       password: passwordEncriptado,
       nombre,
       estado:true,
+      voluntario:voluntarioDB._id
 
     });
 
