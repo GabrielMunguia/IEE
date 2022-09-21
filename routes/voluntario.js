@@ -1,7 +1,7 @@
 const {Router} = require("express")
 const router = Router();
 const { check } = require("express-validator");
-const { crearVoluntario, getVoluntarios, actualizarVoluntario, eliminarVoluntario, getVoluntarioById } = require("../controller/Voluntario");
+const { crearVoluntario, getVoluntarios, actualizarVoluntario, eliminarVoluntario, getVoluntarioById, getVoluntarioByNumeroMiembro } = require("../controller/Voluntario");
 const { validarCampos } = require("../middlewares");
 const { capituloValido } = require("../middlewares/capituloValido");
 const { gradoValido } = require("../middlewares/gradoValido");
@@ -34,6 +34,7 @@ router.get('/',getVoluntarios)
 router.get('/:id',getVoluntarioById)
 router.put('/:id',[validarJWT],actualizarVoluntario)
 router.delete('/:id',[validarJWT],eliminarVoluntario);
+router.get('/noMiembro/:noMiembro',getVoluntarioByNumeroMiembro)
 
 
 module.exports = router;

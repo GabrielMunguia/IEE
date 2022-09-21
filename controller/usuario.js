@@ -9,7 +9,7 @@ const actualizarUsuario = async (req, res) => {
  try {
   const usuario =req.usuario;
 
-  const { __id, password,newPassword ,nombre} = req.body;
+  const { __id, password,newPassword ,nombre,estado} = req.body;
 
 
   //Compruebo si el password coincide
@@ -67,6 +67,10 @@ if(req.files){
   }
 }
 
+
+if(estado){
+  usuario.estado=estado;
+}
 
 
   await usuario.save();
@@ -151,7 +155,8 @@ console.log(usuarioDB)
 const crearUsuario = async (req, res) => {
   try {
     console.clear();
-    const { usuario, password, nombre,voluntario } = req.body;
+    console.log('entramooos')
+    const { usuario, password,voluntario } = req.body;
     //validar si exite un voluntario con ese id
     const voluntarioDB = await Voluntario.findById({_id:voluntario});
     if (!voluntarioDB) {
@@ -159,6 +164,15 @@ const crearUsuario = async (req, res) => {
         msj: "El voluntario no existe",
       });
     }
+
+//validar si el voluntario ya tiene un usuario
+const tieneUnUsuario = await Usuario.findOne({voluntario:voluntarioDB});
+if(tieneUnUsuario){
+  return res.status(400).json({
+    msj: "El voluntario ya tiene un usuario",
+  });
+}
+
     //Verificar si el usuario existe
     const existeUsuario = await Usuario.findOne({ usuario });
     if (existeUsuario) {
@@ -172,39 +186,17 @@ const crearUsuario = async (req, res) => {
     const passwordEncriptado = bcryptjs.hashSync(password, salt);
     //Crear el usuario
 
-
-
     const usuarioDB = new Usuario({
       usuario,
       password: passwordEncriptado,
-      nombre,
       estado:true,
-      voluntario:voluntarioDB._id
+      voluntario:voluntarioDB._id,
+   
 
     });
+    console.log(usuarioDB)
 
-    if (req.files) {
-      try {
-       const img = req.files.archivo;
-
-       if (img) {
-         if (voluntario.img) {
-           //Elimino la imagen antigua del servidor
-           const nombreArray = voluntario.img.split("/");
-           const nombre = nombreArray[nombreArray.length - 1];
-           const [public_id] = nombre.split(".");
-           cloudinary.uploader.destroy(public_id);
-         }
-         //subo la imagen
-         const { tempFilePath } = req.files.archivo;
-         const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
-         usuario.img = secure_url;
-        
-       }
-      } catch (error) {
-       
-      }
-     }
+ 
     await usuarioDB.save();
     res.json({
       status: true,
@@ -213,7 +205,7 @@ const crearUsuario = async (req, res) => {
       }
     });
   } catch (error) {
-    console.log(error);
+console.log('auiii')
     console.log(error.message);
     res.status(500).json({
       msj: "Comuniquese con el administrador"
@@ -221,10 +213,60 @@ const crearUsuario = async (req, res) => {
   }
 }
 
+//eliminar usuario
+const eliminarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const usuario = await Usuario.findById(id);
+    if (!usuario) {
+      return res.status(400).json({
+        status: false,
+        msj: "El usuario no existe"
+      });
+    }
+   await Usuario.findByIdAndDelete(id);
+
+    res.json({
+      status: true,
+      payload: {
+        usuario
+      }
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      msj: "Comuniquese con el administrador"
+    });
+  }
+};
+
+
+
+
+
+const getUsuarios = async (req, res) => {
+  try {
+    const usuarios = await Usuario.find().populate('voluntario');
+    res.json({
+      status: true,
+      payload: {
+        usuarios
+      }
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      msj: "Comuniquese con el administrador"
+    });
+  }
+};
 
 
 module.exports = {
   actualizarUsuario,
   login,
-  crearUsuario
+  crearUsuario,
+  getUsuarios,
+  eliminarUsuario
 };

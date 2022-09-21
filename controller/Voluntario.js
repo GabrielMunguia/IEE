@@ -262,11 +262,46 @@ const getVoluntarioById = async (req, res = response) => {
   }
 
 
+  //obtener voluntario por  numero de miembro
+const getVoluntarioByNumeroMiembro = async (req, res = response) => {
+    try {
+      const { noMiembro } = req.params;
+      console.log(noMiembro)
+ 
+      const voluntario = await Voluntario.findOne({
+        noMiembro:noMiembro
+      });
+
+      if(!voluntario){
+        return res.status(400).json({
+          status:false,
+          msj:"No existe! ningun registro con ese numero de miembro ",
+          'noMiembro':noMiembro
+        })
+      }
+
+      res.json({
+        status: true,
+        payload: {
+          voluntario: voluntario,
+        },
+      });
+    } catch (error) {
+     
+      res.status(500).json({
+        status: false,
+        msj: "Ocurrio un error comuniquese con el administrador",
+      });
+    }
+  }
+
+
   module.exports = {
     crearVoluntario,
     getVoluntarios,
     actualizarVoluntario,
     eliminarVoluntario,
     getVoluntario,
-    getVoluntarioById
+    getVoluntarioById,
+    getVoluntarioByNumeroMiembro,
 }

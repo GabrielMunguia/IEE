@@ -23,7 +23,7 @@ const usuarioSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'Voluntario',
     required: [true, "El voluntario es obligatorio"],
-}
+},
 });
 
 usuarioSchema.methods.toJSON = function () {

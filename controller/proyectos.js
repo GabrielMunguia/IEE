@@ -5,18 +5,29 @@ const ProyectoVideos = require("../models/proyectoVideos");
 
 const crearProyecto = async (req, res) => {
     try {
+      console.log('crear')
       const { titulo, ...resto } = req.body;
+      const img = req.files.archivo;
+  
   
       const tituloMayuscula = titulo.toUpperCase().trim();
       const datos = {
         titulo: tituloMayuscula,
         ...resto,
       };
+
+      if(img){
+            //subo la imagen
+      const { tempFilePath } = img;
+      const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+      datos.img = secure_url;
+      }
   
       const proyecto = new Proyecto(datos);
       proyecto.save();
       res.json({
         status: true,
+        msj: 'crado correctamente',
         payload: {
           proyecto,
         },
@@ -75,7 +86,11 @@ const obtenerProyecto = async (req, res) => {
 
 const actualizarProyecto = async (req, res) => {
   try {
+    console.log('queee Actualizar')
     const { titulo, _id, __v, ...resto } = req.body;
+    const img = req.files?.archivo;
+   
+
     const id = req.params.id;
    
     let data;
@@ -93,6 +108,26 @@ const actualizarProyecto = async (req, res) => {
           };
     }
 
+    if(img){
+      const proyecto = await Proyecto.findById(id);
+     if(proyecto.img.length>5){
+      const nombreArray = proyecto.img.split("/");
+      const nombre = nombreArray[nombreArray.length - 1];
+      const [public_id] = nombre.split(".");
+      cloudinary.uploader.destroy(public_id);
+
+     }
+
+     
+ 
+      //subo la imagen
+      const { tempFilePath } = img;
+      const { secure_url } = await cloudinary.uploader.upload(tempFilePath);
+      data.img = secure_url;
+
+
+      }
+
   
 
     const proyecto = await Proyecto.findByIdAndUpdate(id, data,{new:true});
@@ -106,6 +141,7 @@ const actualizarProyecto = async (req, res) => {
 
     res.json({
       status: true,
+      msj: "Actualizado correctamente",
       payload: {
         proyecto
       },
@@ -128,12 +164,11 @@ const eliminarProyecto=async (req,res)=>{
 
         const proyecto =await  Proyecto.findByIdAndDelete(id);
 
-        
-
-      
-
-
-
+        //eliminar imagen de cloudinary
+        const nombreArray = proyecto?.img.split("/");
+        const nombre = nombreArray[nombreArray.length - 1];
+        const [public_id] = nombre.split(".");
+        cloudinary.uploader.destroy(public_id);
 
         if (!proyecto) {
             return res.status(400).json({

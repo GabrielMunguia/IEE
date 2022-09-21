@@ -20,6 +20,10 @@ const proyectosSchema= Schema({
         type:String,
         default:""
     },
+    img:{
+        type:String,
+        default:""
+    },
     fecha:{
         type:Date, 
         
