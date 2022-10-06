@@ -211,6 +211,7 @@ const getVoluntarios = async (req, res = response) => {
         return res.status(400).json({
           status: false,
           msj: 'El rango no existe',
+          rangos: existeRango,
         });
       }
       where.rango = rango;
