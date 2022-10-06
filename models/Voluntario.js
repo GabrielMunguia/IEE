@@ -26,9 +26,11 @@ const voluntarioSchema = new Schema({
     telefono: {
         type: String,
         unique: true,
-
-       
-       
+    }
+    ,
+    rango:{
+        type: String,
+        enum: ['Presidente', 'Vice presidente', 'Tesorero','Vocal','Mentor','Consejero','Asesor'],
     }
     ,
     grado: {
@@ -51,6 +53,7 @@ const voluntarioSchema = new Schema({
     },
     linkedin: {
         type: String,
+        default:""
        
     },
     img: {

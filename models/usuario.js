@@ -24,6 +24,7 @@ const usuarioSchema = Schema({
     ref: 'Voluntario',
     required: [true, "El voluntario es obligatorio"],
 },
+
 });
 
 usuarioSchema.methods.toJSON = function () {

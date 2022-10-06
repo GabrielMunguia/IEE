@@ -19,7 +19,8 @@ class Server {
             email:'/api/email',
             grados:'/api/grados',
             capitulos:'/api/capitulos',
-            voluntarios:'/api/voluntarios'
+            voluntarios:'/api/voluntarios',
+            recuperacion:'/api/recuperacion/password'
 
 
         }
@@ -80,7 +81,9 @@ class Server {
 
         this.app.use(this.paths.capitulos,require('../routes/capitulo'))
 
-        this.app.use(this.paths.voluntarios,require('../routes/voluntario'))
+        this.app.use(this.paths.voluntarios,require('../routes/voluntario'));
+
+        this.app.use(this.paths.recuperacion,require('../routes/codigoRecuperacion'));
         
 
 
