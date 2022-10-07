@@ -174,9 +174,8 @@ const getVoluntario = async (req, res = response) => {
 
 const getVoluntarios = async (req, res = response) => {
   try {
-    console.clear();
     const { grado, capitulo, rango } = req.query;
-    console.log(grado, capitulo);
+
     //validar si el grado existe
     const where = {};
     if (grado) {
@@ -220,6 +219,7 @@ const getVoluntarios = async (req, res = response) => {
     const voluntarios = await Voluntario.find(where).populate('grado').populate('capitulo');
     res.json({
       status: true,
+
       payload: {
         voluntarios: voluntarios,
       },
